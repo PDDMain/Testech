@@ -34,7 +34,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     private Double MID = 0.0;
 
-    public double SIDE_OF_SQUARE = 3.0 / 7.0;
+    public double SIDE_OF_SQUARE = 1.0 / 7.0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -113,17 +113,17 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         int h = (int) mRgba.size().height;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
         Point centr = new Point(w / 2, h / 2);
-        Point leftRight = new Point(centr.x - SIDE_OF_SQUARE/2, centr.y - SIDE_OF_SQUARE/2);
-        Point rightLeft = new Point(centr.x + SIDE_OF_SQUARE/2, centr.y + SIDE_OF_SQUARE/2);
-        Imgproc.rectangle(mRgba, leftRight, rightLeft, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        int side = (int) (w * SIDE_OF_SQUARE);
+        Point leftRight = new Point(centr.x - side / 2, centr.y - side / 2);
+        Point rightLeft = new Point(centr.x + side / 2, centr.y + side / 2);
+        Imgproc.rectangle(mRgba, leftRight, rightLeft, new Scalar(Color.red(55), Color.green(55), Color.blue(55)));
 //        Imgproc.line(mRgba, new Point(0, 3 * h / 7), new Point(w, 3 * h / 7), new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 //        Imgproc.line(mRgba, new Point(0, 4 * h / 7), new Point(w, 4 * h / 7), new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 //        Imgproc.line(mRgba, new Point((w / 2) - h / 14, 0), new Point((w / 2) - h / 14, h), new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 //        Imgproc.line(mRgba, new Point((w / 2) + h / 14, 0), new Point((w / 2) + h / 14, h), new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
 
-        Rect rect = new Rect((w / 2) - h / 14, 3 * h / 7, h / 7, h / 7);
-
+        Rect rect = new Rect(leftRight, rightLeft);
         int sum = 0;
         for (int i = rect.x; i < rect.x + rect.width; i++) {
             for (int j = rect.y; j < rect.y + rect.height; j++) {
