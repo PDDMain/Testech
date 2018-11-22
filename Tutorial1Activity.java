@@ -1,7 +1,6 @@
 package org.opencv.samples.tutorial1;
 
 import android.graphics.Color;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.view.*;
 import android.widget.TextView;
 import org.opencv.android.BaseLoaderCallback;
@@ -17,10 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import org.opencv.imgproc.Imgproc;
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
-import java.util.Timer;
 
 public class Tutorial1Activity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
@@ -32,7 +27,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private Mat mRgba;
     private Mat mGray;
 
-    private Double MID = 0.0;
+    private Double MID1 = 0.0;
+    private Double MID2 = 0.0;
+    private Double MID3 = 0.0;
 
     public double SIDE_OF_SQUARE = 1.0 / 7.0;
 
@@ -131,20 +128,34 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         }
 
-        MID = (1.0 * sum) / (rect.height * rect.height);
-//        MID = mGray.get(50, 50)[0];
+        MID1 = (1.0 * sum) / (rect.height * rect.height);
+
         MatOfDouble mean = new MatOfDouble(0, 0, 0, 0);
         MatOfDouble stddev = new MatOfDouble(0, 0, 0, 0);
-        Core.meanStdDev(mGray, mean, stddev);
-        TextView text = findViewById(R.id.editText);
+//        MatOfByte mask = new MatOfByte(w, h);
+//        for(int i = (int) leftRight.x; i < leftRight.x + w*SIDE_OF_SQUARE; i++){
+//            for(int j = (int) leftRight.y; j < leftRight.y + w*SIDE_OF_SQUARE; j++){
+//                byte[] arr = new byte[1];
+//                arr[0] = 1;
+//                mask.get(i, j, arr);
+//            }
+//        }
+        Core.meanStdDev(mGray, mean, stddev/*, mask*/);
+        MID2 = mean.toArray()[0];
+        MID3 = stddev.toArray()[0];
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                text.setText(Double.toString(MID));
-                text.setText(Double.toString(MID));
-            }
-        });
+        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, toShortString(MID2, 7), new Point(leftRight.x, leftRight.y + 30), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, toShortString(MID3, 7), new Point(leftRight.x, leftRight.y + 45), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+
         return mRgba;
+    }
+
+    private String toShortString(Double d, int leangth){
+        String res = Double.toString(d);
+        while(res.length() < leangth + 1){
+            res+="0";
+        }
+        return res.substring(0, leangth);
     }
 }
