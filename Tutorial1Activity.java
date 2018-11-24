@@ -31,7 +31,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private Double MID2 = 0.0;
     private Double MID3 = 0.0;
 
-    public double SIDE_OF_SQUARE = 1.0 / 7.0;
+    private int QUANTITY_X = 4;
+    private int QUANTITY_Y = 6;
+
+    public double SIDE_OF_SQUARE = 1.0 / 16.0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -106,10 +109,35 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
+
+        int h = (int) mRgba.size().height;     //display.getHeight();
+        int w = (int) mRgba.size().width;    //display.getWidth();
+//        Display display = getWindowManager().getDefaultDisplay();
+//        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
+        for (int i = 0; i < QUANTITY_X; i++) {
+            for (int j = 0; j < QUANTITY_Y; j++) {
+                if (QUANTITY_X > 1 && QUANTITY_Y > 1) {
+                    int l_x = (int) (1.0 * w / (QUANTITY_X));
+                    int l_y = (int) (1.0 * h / (QUANTITY_Y));
+                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, l_y/2 + j * l_y));
+                } else if (QUANTITY_X > 1) {
+                    int l_x = (int) (1.0 * w / (QUANTITY_X));
+                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, h / 2));
+                } else if (QUANTITY_Y > 1) {
+                    int l_y = (int) (1.0 * h / (QUANTITY_Y));
+                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y/2 + j * l_y));
+                } else if (QUANTITY_Y == 1 && QUANTITY_X == 1) {
+                    mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
+                }
+            }
+        }
+        return mRgba;
+    }
+
+    private Mat midRect(Mat mRgba, Mat mGray, Point centr) {
 //        Display display = getWindowManager().getDefaultDisplay();
         int h = (int) mRgba.size().height;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
-        Point centr = new Point(w / 2, h / 2);
         int side = (int) (w * SIDE_OF_SQUARE);
         Point leftRight = new Point(centr.x - side / 2, centr.y - side / 2);
         Point rightLeft = new Point(centr.x + side / 2, centr.y + side / 2);
@@ -124,7 +152,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         int sum = 0;
         for (int i = rect.x; i < rect.x + rect.width; i++) {
             for (int j = rect.y; j < rect.y + rect.height; j++) {
-                sum += (int) mGray.get(j, i)[0];
+                if (mGray.get(j, i) != null) {
+                    sum += (int) mGray.get(j, i)[0];
+                }
             }
         }
 
@@ -151,10 +181,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         return mRgba;
     }
 
-    private String toShortString(Double d, int leangth){
+    private String toShortString(Double d, int leangth) {
         String res = Double.toString(d);
-        while(res.length() < leangth + 1){
-            res+="0";
+        while (res.length() < leangth + 1) {
+            res += "0";
         }
         return res.substring(0, leangth);
     }
