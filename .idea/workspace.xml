@@ -49,8 +49,8 @@
       <file leaf-file-name="Tutorial1Activity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/opencv/samples/tutorial1/Tutorial1Activity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="180" column="12" lean-forward="false" selection-start-line="180" selection-start-column="12" selection-end-line="180" selection-end-column="12" />
+            <state relative-caret-position="439">
+              <caret line="185" column="45" lean-forward="false" selection-start-line="185" selection-start-column="45" selection-end-line="185" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1736#1737#0" expanded="true" />
@@ -113,7 +113,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -141,8 +141,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -165,6 +163,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -862,8 +862,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/opencv/samples/tutorial1/Tutorial1Activity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="180" column="12" lean-forward="false" selection-start-line="180" selection-start-column="12" selection-end-line="180" selection-end-column="12" />
+        <state relative-caret-position="439">
+          <caret line="185" column="45" lean-forward="false" selection-start-line="185" selection-start-column="45" selection-end-line="185" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1736#1737#0" expanded="true" />
