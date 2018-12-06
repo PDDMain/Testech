@@ -34,6 +34,12 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private int QUANTITY_X = 7;
     private int QUANTITY_Y = 4;
 
+    private boolean[][] RESULT = new boolean[QUANTITY_X][QUANTITY_Y];
+    private boolean[][] ANSWER = new boolean[QUANTITY_X][QUANTITY_Y];
+
+    private int SUM_RESULT = 0;
+    private int MARK;
+
     public double SIDE_OF_SQUARE = 1.0 / 15.0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -71,6 +77,14 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.tutorial1_activity_java_surface_view);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+
+        ANSWER[0][1] = true;
+        ANSWER[1][3] = true;
+        ANSWER[2][0] = true;
+        ANSWER[3][0] = true;
+        ANSWER[4][1] = true;
+        ANSWER[5][2] = true;
+        ANSWER[6][3] = true;
 
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
@@ -110,7 +124,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        int h = (int) mRgba.size().height-290;     //display.getHeight();
+        int h = (int) mRgba.size().height;//-290;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
 //        Display display = getWindowManager().getDefaultDisplay();
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
@@ -119,22 +133,36 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 if (QUANTITY_X > 1 && QUANTITY_Y > 1) {
                     int l_x = (int) (1.0 * w / (QUANTITY_X));
                     int l_y = (int) (1.0 * h / (QUANTITY_Y));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, l_y/2 + j * l_y));
+                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, l_y/2 + j * l_y), i, j);
                 } else if (QUANTITY_X > 1) {
                     int l_x = (int) (1.0 * w / (QUANTITY_X));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, h / 2));
+                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, h / 2), i, j);
                 } else if (QUANTITY_Y > 1) {
                     int l_y = (int) (1.0 * h / (QUANTITY_Y));
-                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y/2 + j * l_y));
+                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y/2 + j * l_y), i, j);
                 } else if (QUANTITY_Y == 1 && QUANTITY_X == 1) {
-                    mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
+                    mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2), i, j);
                 }
             }
         }
+
+        SUM_RESULT = 0;
+        for(int i = 0; i < QUANTITY_Y; i++){
+            for(int j = 0; j < QUANTITY_X; j++){
+                if(isTrue(i)){
+                    SUM_RESULT++;
+                }
+            }
+        }
+
+        MARK = ((SUM_RESULT/QUANTITY_X)*4 + 1);
+
+        Imgproc.putText(mRgba, Integer.toString(MARK),new Point(15, 30), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+
         return mRgba;
     }
 
-    private Mat midRect(Mat mRgba, Mat mGray, Point centr) {
+    private Mat midRect(Mat mRgba, Mat mGray, Point centr, int i, int j) {
 //        Display display = getWindowManager().getDefaultDisplay();
         int h = (int) mRgba.size().height;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
@@ -158,7 +186,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //        }
 //
 //        MID1 = (1.0 * sum) / (rect.height * rect.height);
-
         MatOfDouble mean = new MatOfDouble(0, 0, 0, 0);
         MatOfDouble stddev = new MatOfDouble(0, 0, 0, 0);
 //        MatOfByte mask = new MatOfByte(w, h);
@@ -172,24 +199,34 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         Core.meanStdDev(mGray.submat(rect), mean, stddev/*, mask*/);
         MID2 = mean.toArray()[0];
         MID3 = stddev.toArray()[0];
-
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
         if(MID2 > 95 && MID3 < 30){
             colorOfRect = new Scalar(Color.red(33), Color.green(255), Color.blue(0));
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-
+            RESULT[i][j] = true;
         }else if(MID2 < 50 && MID3 < 20){
             colorOfRect = new Scalar(Color.red(255), Color.green(12), Color.blue(0));
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+            RESULT[i][j] = false;
         }else{
             Imgproc.putText(mRgba, "not found", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+            RESULT[i][j] = false;
         }
         Imgproc.rectangle(mRgba, leftRight, rightLeft, colorOfRect);
         Imgproc.putText(mRgba, String.format("%05.2f", MID2), new Point(leftRight.x, leftRight.y), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Imgproc.putText(mRgba, String.format("%05.2f", MID3), new Point(leftRight.x, leftRight.y + rect.height + 10), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
+    }
+
+    private boolean isTrue(int numberOfQuestion){
+        for(int i = 0; i < QUANTITY_X;i++){
+            if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
+                return false;
+            }
+        }
+        return true;
     }
 
     private String toShortString(Double d, int leangth) {
