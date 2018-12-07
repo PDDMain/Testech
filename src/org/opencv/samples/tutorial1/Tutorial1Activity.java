@@ -147,17 +147,15 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
 
         SUM_RESULT = 0;
-        for(int i = 0; i < QUANTITY_Y; i++){
-            for(int j = 0; j < QUANTITY_X; j++){
-                if(isTrue(i)){
-                    SUM_RESULT++;
-                }
+        for(int i = 0; i < QUANTITY_X; i++){
+            if(isTrue(i)){
+                SUM_RESULT++;
             }
         }
 
         MARK = ((SUM_RESULT/QUANTITY_X)*4 + 1);
 
-        Imgproc.putText(mRgba, Integer.toString(MARK),new Point(15, 30), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, Integer.toString(MARK)+" / " + SUM_RESULT,new Point(15, 30), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
@@ -221,7 +219,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     private boolean isTrue(int numberOfQuestion){
-        for(int i = 0; i < QUANTITY_X;i++){
+        for(int i = 0; i < QUANTITY_Y;i++){
             if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
                 return false;
             }
