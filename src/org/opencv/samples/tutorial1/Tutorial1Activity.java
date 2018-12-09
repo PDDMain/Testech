@@ -40,7 +40,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private int SUM_RESULT = 0;
     private int MARK;
 
-    public double SIDE_OF_SQUARE = 1.0 / 15.0;
+    public double SIDE_OF_SQUARE = 1.0 / 18.0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -124,7 +124,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        int h = (int) mRgba.size().height;//-290;     //display.getHeight();
+        int h = (int) mRgba.size().height-290;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
 //        Display display = getWindowManager().getDefaultDisplay();
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
@@ -155,7 +155,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         MARK = ((SUM_RESULT/QUANTITY_X)*4 + 1);
 
-        Imgproc.putText(mRgba, Integer.toString(MARK)+" / " + SUM_RESULT,new Point(15, 30), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, Integer.toString(MARK)+" / " + SUM_RESULT,new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
@@ -199,7 +199,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         MID3 = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
-        if(MID2 > 95 && MID3 < 30){
+        if(MID2 > 88 && MID3 < 35){
             colorOfRect = new Scalar(Color.red(33), Color.green(255), Color.blue(0));
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
             RESULT[i][j] = true;
