@@ -1,21 +1,27 @@
 package org.opencv.samples.tutorial1;
 
+import android.app.Activity;
 import android.graphics.Color;
-import android.view.*;
-import android.widget.TextView;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.*;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 import org.opencv.imgproc.Imgproc;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 public class Tutorial1Activity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
@@ -73,6 +79,51 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.tutorial1_surface_view);
+
+
+        Button mail = findViewById(R.id.button);
+        mail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        final String username = "practice.PTHS@gmail.com";
+                        final String password = "kindzaza";
+
+                        Properties props = new Properties();
+                        props.put("mail.smtp.auth", "true");
+                        props.put("mail.smtp.starttls.enable", "true");
+                        props.put("mail.smtp.host", "smtp.gmail.com");
+                        props.put("mail.smtp.port", "587");
+
+                        Session session = Session.getInstance(props,
+                                new javax.mail.Authenticator() {
+                                    protected PasswordAuthentication getPasswordAuthentication() {
+                                        return new PasswordAuthentication(username, password);
+                                    }
+                                });
+
+                        try {
+
+                            Message message = new MimeMessage(session);
+                            message.setFrom(new InternetAddress("practice.PTHS@gmail.com"));
+                            message.setRecipients(Message.RecipientType.TO,
+                                    InternetAddress.parse("polzikd@mail.ru"));
+                            message.setSubject("Testing Subject");
+                            message.setText("Dear Mail Crawler,"
+                                    + "\n\n No spam to my email, please!");
+
+                            Transport.send(message);
+
+                            Log.i("Done", "Email was sended");
+
+                        } catch (MessagingException e) {
+                            throw new RuntimeException(e);
+                        }            }
+                }).start();
+            }
+        });
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.tutorial1_activity_java_surface_view);
 
@@ -200,11 +251,11 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
         if(MID2 > 88 && MID3 < 35){
-            colorOfRect = new Scalar(Color.red(33), Color.green(255), Color.blue(0));
-            Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+            colorOfRect = new Scalar(33, 255, 0);
+            Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(0, 0, 0));
             RESULT[i][j] = true;
         }else if(MID2 < 50 && MID3 < 20){
-            colorOfRect = new Scalar(Color.red(255), Color.green(12), Color.blue(0));
+            colorOfRect = new Scalar(255, 12, 0);
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
             RESULT[i][j] = false;
         }else{
