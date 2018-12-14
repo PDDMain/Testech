@@ -81,7 +81,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         setContentView(R.layout.tutorial1_surface_view);
 
 
-        Button mail = findViewById(R.id.button);
+        Button mail = findViewById(R.id.mail);
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +112,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                                     InternetAddress.parse("polzikd@mail.ru"));
                             message.setSubject("Testing Subject");
                             message.setText("Dear Mail Crawler,"
-                                    + "\n\n No spam to my email, please!");
+                                    + "\n\nyour mark is" + Integer.toString(MARK));
 
                             Transport.send(message);
 
