@@ -23,6 +23,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+
 public class Tutorial1Activity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
 
@@ -98,7 +99,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                         props.put("mail.smtp.port", "587");
 
                         Session session = Session.getInstance(props,
-                                new javax.mail.Authenticator() {
+                                new Authenticator() {
                                     protected PasswordAuthentication getPasswordAuthentication() {
                                         return new PasswordAuthentication(username, password);
                                     }
@@ -108,7 +109,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
                             Message message = new MimeMessage(session);
                             message.setFrom(new InternetAddress("practice.PTHS@gmail.com"));
-                            message.setRecipients(Message.RecipientType.TO,
+                            message.setRecipients(javax.mail.Message.RecipientType.TO,
                                     InternetAddress.parse("polzikd@mail.ru"));
                             message.setSubject("Testing Subject");
                             message.setText("Dear Mail Crawler,"

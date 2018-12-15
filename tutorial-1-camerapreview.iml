@@ -14,6 +14,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="sdk" />
-    <orderEntry type="library" exported="" name="javax.mail:javax.mail-api:1.6.2" level="project" />
+    <orderEntry type="library" name="com.sun.mail:android-mail:1.6.2" level="project" />
   </component>
 </module>

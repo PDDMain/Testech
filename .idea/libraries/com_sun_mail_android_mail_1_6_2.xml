@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="com.sun.mail:android-mail:1.6.2" type="repository">
+    <properties maven-id="com.sun.mail:android-mail:1.6.2" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/mail/android-mail/1.6.2/android-mail-1.6.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/mail/android-activation/1.6.2/android-activation-1.6.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/mail/android-mail/1.6.2/android-mail-1.6.2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/mail/android-activation/1.6.2/android-activation-1.6.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
