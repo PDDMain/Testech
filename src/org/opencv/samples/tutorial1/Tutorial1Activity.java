@@ -1,14 +1,17 @@
 package org.opencv.samples.tutorial1;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -21,6 +24,7 @@ import org.opencv.imgproc.Imgproc;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.Properties;
 
 
@@ -123,6 +127,37 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                             throw new RuntimeException(e);
                         }            }
                 }).start();
+            }
+        });
+
+        Button file = findViewById(R.id.file);
+        file.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                File file = new File(Environment.getExternalStoragePublicDirectory(
+//                        Environment.DIRECTORY_DOCUMENTS), "input.txt");
+
+//                try {
+//                    OutputStream outputStream = openFileOutput("input.txt", Context.MODE_PRIVATE);
+//                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+//                    osw.write("Hello world!");
+//                    osw.close();
+//                } catch (Throwable t) {
+//                    Toast.makeText(getApplicationContext(),
+//                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+//                }
+
+                FileOutputStream fos = null;
+                try {
+                    fos = openFileOutput("input", Context.MODE_PRIVATE);
+                    fos.write("Hello, world!".getBytes());
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

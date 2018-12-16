@@ -13,8 +13,12 @@
             opencv:show_fps="false"
             opencv:camera_id="any" />
     <Button
-            android:text="Mail"
+            android:text="Send mail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/mail"/>
+    <Button
+            android:text="Create file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/file"/>
 
 </FrameLayout>
