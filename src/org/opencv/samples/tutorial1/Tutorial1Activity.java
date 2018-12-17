@@ -147,7 +147,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
 //                }
 
-                FileOutputStream fos = null;
+
                 try {
                     fos = openFileOutput("input", Context.MODE_PRIVATE);
                     fos.write("Hello, world!".getBytes());
