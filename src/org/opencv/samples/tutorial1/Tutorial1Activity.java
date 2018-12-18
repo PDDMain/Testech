@@ -24,6 +24,8 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 
@@ -139,7 +141,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
                 try {
                     FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOCUMENTS), "input.jpg"));
+                            Environment.DIRECTORY_DOCUMENTS), "picture" + getDate() + ".jpg"));
                     OutputStreamWriter osw = new OutputStreamWriter(outputStream);
 
                     Bitmap bmp = null;
@@ -161,17 +163,19 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                             "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
                 }
 
-//                FileOutputStream fos = null;
-//                try {
-//                    fos = openFileOutput("input", Context.MODE_PRIVATE);
-//                    fos.write("Hello, world!".getBytes());
-//                    fos.close();
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
 
+
+
+                try {
+                    FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOCUMENTS), "data" + getDate() + ".txt"));
+                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+                    osw.write(getData());
+                    osw.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(),
+                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -188,6 +192,17 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         ANSWER[6][3] = true;
 
         mOpenCvCameraView.setCvCameraViewListener(this);
+    }
+
+    public String getDate(){
+        Date currentTime = Calendar.getInstance().getTime();
+        return currentTime.getYear() + "-" + currentTime.getMonth() + "-" + currentTime.getDate() + "-" + currentTime.getHours() + "-" + currentTime.getMinutes() + "-" + currentTime.getSeconds();
+
+    }
+
+    public String getData(){
+        String res = "";
+        return res;
     }
 
     @Override
