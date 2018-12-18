@@ -2,9 +2,11 @@ package org.opencv.samples.tutorial1;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -12,12 +14,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.*;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
@@ -37,6 +36,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     private Mat mRgba;
     private Mat mGray;
+    private Mat lastCameraFrame;
 
     private Double MID1 = 0.0;
     private Double MID2 = 0.0;
@@ -93,8 +93,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 new Thread(new Runnable(){
                     @Override
                     public void run() {
-                        final String username = "practice.PTHS@gmail.com";
-                        final String password = "kindzaza";
+                        final String username = getString(R.string.email);
+                        final String password = getString(R.string.password);
 
                         Properties props = new Properties();
                         props.put("mail.smtp.auth", "true");
@@ -130,33 +130,47 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         });
 
-        Button file = findViewById(R.id.file);
-        file.setOnClickListener(new View.OnClickListener() {
+        Button fileButton = findViewById(R.id.file);
+        fileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                File file = new File(Environment.getExternalStoragePublicDirectory(
 //                        Environment.DIRECTORY_DOCUMENTS), "input.txt");
 
-//                try {
-//                    OutputStream outputStream = openFileOutput("input.txt", Context.MODE_PRIVATE);
-//                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
-//                    osw.write("Hello world!");
-//                    osw.close();
-//                } catch (Throwable t) {
-//                    Toast.makeText(getApplicationContext(),
-//                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
-//                }
-
-
                 try {
-                    fos = openFileOutput("input", Context.MODE_PRIVATE);
-                    fos.write("Hello, world!".getBytes());
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOCUMENTS), "input.jpg"));
+                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+
+                    Bitmap bmp = null;
+//                    Imgproc.cvtColor(input, rgb, Imgproc.COLOR_BGR2RGB);
+
+                    try {
+                        bmp = Bitmap.createBitmap(lastCameraFrame.cols(), lastCameraFrame.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(lastCameraFrame, bmp);
+                    }
+                    catch (CvException e){
+                        Log.d("Exception",e.getMessage());
+                    }
+
+                    bmp.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+
+                    osw.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(),
+                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
                 }
+
+//                FileOutputStream fos = null;
+//                try {
+//                    fos = openFileOutput("input", Context.MODE_PRIVATE);
+//                    fos.write("Hello, world!".getBytes());
+//                    fos.close();
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
             }
         });
@@ -210,6 +224,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
+        lastCameraFrame = inputFrame.rgba().clone();
 
         int h = (int) mRgba.size().height-290;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
