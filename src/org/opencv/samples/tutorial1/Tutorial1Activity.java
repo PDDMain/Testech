@@ -47,6 +47,13 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private int QUANTITY_X = 7;
     private int QUANTITY_Y = 4;
 
+    private int MIN_MID2_FOR_TRUE = 88;
+    private int MAX_MID2_FOR_FALSE = 88;
+
+    private int MAX_MID3_FOR_TRUE = 88;
+    private int MAX_MID3_FOR_FALSE = 88;
+
+
     private boolean[][] RESULT = new boolean[QUANTITY_X][QUANTITY_Y];
     private boolean[][] ANSWER = new boolean[QUANTITY_X][QUANTITY_Y];
 
@@ -201,8 +208,34 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     public String getData(){
-        String res = "";
-        return res;
+        StringBuilder res = new StringBuilder();
+        res.append(QUANTITY_X + " " + QUANTITY_Y);
+        res.append("\n");
+
+        res.append(MAX_MID2_FOR_FALSE+" "+MAX_MID3_FOR_FALSE);
+        res.append("\n");
+
+        res.append(MIN_MID2_FOR_TRUE + " " +MAX_MID3_FOR_TRUE);
+        res.append("\n");
+
+        for(int i = 0; i < RESULT.length; i++){
+            for(int j = 0; j < RESULT[i].length; j++){
+                res.append(RESULT[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        for(int i = 0; i < ANSWER.length; i++){
+            for(int j = 0; j < ANSWER[i].length; j++){
+                res.append(ANSWER[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+
+        return res.toString();
     }
 
     @Override
@@ -316,14 +349,14 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         MID3 = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
-        if(MID2 > 88 && MID3 < 35){
+        if(MID2 < MAX_MID2_FOR_FALSE && MID3 < MAX_MID3_FOR_FALSE){
             colorOfRect = new Scalar(33, 255, 0);
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(0, 0, 0));
-            RESULT[i][j] = true;
-        }else if(MID2 < 50 && MID3 < 20){
+            RESULT[i][j] = false;
+        }else if(MID2 > MIN_MID2_FOR_TRUE && MID3 < MAX_MID3_FOR_TRUE){
             colorOfRect = new Scalar(255, 12, 0);
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-            RESULT[i][j] = false;
+            RESULT[i][j] = true;
         }else{
             Imgproc.putText(mRgba, "not found", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
             RESULT[i][j] = false;
