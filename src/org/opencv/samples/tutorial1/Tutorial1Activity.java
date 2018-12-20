@@ -192,13 +192,13 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
-        ANSWER[0][1] = true;
-        ANSWER[1][3] = true;
-        ANSWER[2][0] = true;
-        ANSWER[3][0] = true;
-        ANSWER[4][1] = true;
-        ANSWER[5][2] = true;
-        ANSWER[6][3] = true;
+        ANSWER[0][2] = true;
+        ANSWER[1][0] = true;
+        ANSWER[2][3] = true;
+        ANSWER[3][3] = true;
+        ANSWER[4][2] = true;
+        ANSWER[5][1] = true;
+        ANSWER[6][0] = true;
 
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
