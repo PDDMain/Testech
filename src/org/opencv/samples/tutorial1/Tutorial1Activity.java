@@ -41,8 +41,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private Mat lastCameraFrame;
 
     private Double MID1 = 0.0;
-    private Double MID2 = 0.0;
-    private Double MID3 = 0.0;
+    private Double[][] mid2;
+    private Double[][] mid3;
 
     private int QUANTITY_X = 7;
     private int QUANTITY_Y = 4;
@@ -94,6 +94,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         setContentView(R.layout.tutorial1_surface_view);
 
+        mid2 = new Double[QUANTITY_X][QUANTITY_Y];
+        mid3 = new Double[QUANTITY_X][QUANTITY_Y];
 
         Button mail = findViewById(R.id.mail);
         mail.setOnClickListener(new View.OnClickListener() {
@@ -234,6 +236,21 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         res.append("\n");
 
+        for(int i = 0; i < mid2.length; i++){
+            for(int j = 0; j < mid2[i].length; j++){
+                res.append(mid2[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        for(int i = 0; i < mid3.length; i++){
+            for(int j = 0; j < mid3[i].length; j++){
+                res.append(mid3[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
 
         return res.toString();
     }
@@ -345,15 +362,15 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //            }
 //        }
         Core.meanStdDev(mGray.submat(rect), mean, stddev/*, mask*/);
-        MID2 = mean.toArray()[0];
-        MID3 = stddev.toArray()[0];
+        mid2[i][j] = mean.toArray()[0];
+        mid3[i][j] = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
-        if(MID2 < MAX_MID2_FOR_FALSE && MID3 < MAX_MID3_FOR_FALSE){
+        if(mid2[i][j] < MAX_MID2_FOR_FALSE && mid3[i][j] < MAX_MID3_FOR_FALSE){
             colorOfRect = new Scalar(33, 255, 0);
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(0, 0, 0));
             RESULT[i][j] = false;
-        }else if(MID2 > MIN_MID2_FOR_TRUE && MID3 < MAX_MID3_FOR_TRUE){
+        }else if(mid2[i][j] > MIN_MID2_FOR_TRUE && mid3[i][j] < MAX_MID3_FOR_TRUE){
             colorOfRect = new Scalar(255, 12, 0);
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
             RESULT[i][j] = true;
@@ -362,8 +379,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             RESULT[i][j] = false;
         }
         Imgproc.rectangle(mRgba, leftRight, rightLeft, colorOfRect);
-        Imgproc.putText(mRgba, String.format("%05.2f", MID2), new Point(leftRight.x, leftRight.y), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-        Imgproc.putText(mRgba, String.format("%05.2f", MID3), new Point(leftRight.x, leftRight.y + rect.height + 10), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, String.format("%05.2f", mid2[i][j]), new Point(leftRight.x, leftRight.y), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, String.format("%05.2f", mid3[i][j]), new Point(leftRight.x, leftRight.y + rect.height + 10), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
