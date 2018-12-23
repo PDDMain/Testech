@@ -147,10 +147,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             public void onClick(View v) {
 //                File file = new File(Environment.getExternalStoragePublicDirectory(
 //                        Environment.DIRECTORY_DOCUMENTS), "input.txt");
-
+                String date = getDate();
                 try {
                     FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOCUMENTS), "picture" + getDate() + ".jpg"));
+                            Environment.DIRECTORY_DOCUMENTS), "picture" + date + ".jpg"));
                     OutputStreamWriter osw = new OutputStreamWriter(outputStream);
 
                     Bitmap bmp = null;
@@ -177,7 +177,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
                 try {
                     FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOCUMENTS), "data" + getDate() + ".txt"));
+                            Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"));
                     OutputStreamWriter osw = new OutputStreamWriter(outputStream);
                     osw.write(getData());
                     osw.close();
@@ -222,7 +222,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         for(int i = 0; i < RESULT.length; i++){
             for(int j = 0; j < RESULT[i].length; j++){
-                res.append(RESULT[i][j] + " ");
+                res.append(!RESULT[i][j] + " ");
             }
             res.append("\n");
         }
