@@ -145,8 +145,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         fileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 //                File file = new File(Environment.getExternalStoragePublicDirectory(
 //                        Environment.DIRECTORY_DOCUMENTS), "input.txt");
+
                 String date = getDate();
                 try {
                     FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
@@ -154,6 +156,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                     OutputStreamWriter osw = new OutputStreamWriter(outputStream);
 
                     Bitmap bmp = null;
+
 //                    Imgproc.cvtColor(input, rgb, Imgproc.COLOR_BGR2RGB);
 
                     try {
@@ -185,6 +188,14 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                     Toast.makeText(getApplicationContext(),
                             "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        Button saveAnswer = findViewById(R.id.answer);
+        saveAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ANSWER = RESULT.clone();
             }
         });
 
