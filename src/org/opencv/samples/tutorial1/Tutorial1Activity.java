@@ -1,9 +1,11 @@
 package org.opencv.samples.tutorial1;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,6 +26,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
@@ -193,9 +196,13 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         Button saveAnswer = findViewById(R.id.answer);
         saveAnswer.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onClick(View v) {
-                ANSWER = RESULT.clone();
+//                ANSWER = RESULT.clone();
+                for (int i = 0; i < RESULT.length; i++) {
+                    ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT.length);//copyOf(RESULT[i], RESULT[i].length);
+                }
             }
         });
 
