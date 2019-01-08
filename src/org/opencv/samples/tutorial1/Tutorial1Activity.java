@@ -1,26 +1,31 @@
 package org.opencv.samples.tutorial1;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
+import android.widget.Toast;
+import org.opencv.android.*;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 
@@ -33,13 +38,21 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     private Mat mRgba;
     private Mat mGray;
+    private Mat lastCameraFrame;
 
     private Double MID1 = 0.0;
-    private Double MID2 = 0.0;
-    private Double MID3 = 0.0;
+    private Double[][] mid2;
+    private Double[][] mid3;
 
     private int QUANTITY_X = 7;
     private int QUANTITY_Y = 4;
+
+    private int MIN_MID2_FOR_TRUE = 88;
+    private int MAX_MID2_FOR_FALSE = 88;
+
+    private int MAX_MID3_FOR_TRUE = 88;
+    private int MAX_MID3_FOR_FALSE = 88;
+
 
     private boolean[][] RESULT = new boolean[QUANTITY_X][QUANTITY_Y];
     private boolean[][] ANSWER = new boolean[QUANTITY_X][QUANTITY_Y];
@@ -81,6 +94,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         setContentView(R.layout.tutorial1_surface_view);
 
+        mid2 = new Double[QUANTITY_X][QUANTITY_Y];
+        mid3 = new Double[QUANTITY_X][QUANTITY_Y];
 
         Button mail = findViewById(R.id.mail);
         mail.setOnClickListener(new View.OnClickListener() {
@@ -89,8 +104,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 new Thread(new Runnable(){
                     @Override
                     public void run() {
-                        final String username = "practice.PTHS@gmail.com";
-                        final String password = "kindzaza";
+                        final String username = getString(R.string.email);
+                        final String password = getString(R.string.password);
 
                         Properties props = new Properties();
                         props.put("mail.smtp.auth", "true");
@@ -126,19 +141,129 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         });
 
+        Button fileButton = findViewById(R.id.file);
+        fileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                File file = new File(Environment.getExternalStoragePublicDirectory(
+//                        Environment.DIRECTORY_DOCUMENTS), "input.txt");
+
+                String date = getDate();
+                try {
+                    FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOCUMENTS), "picture" + date + ".jpg"));
+                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+
+                    Bitmap bmp = null;
+
+//                    Imgproc.cvtColor(input, rgb, Imgproc.COLOR_BGR2RGB);
+
+                    try {
+                        bmp = Bitmap.createBitmap(lastCameraFrame.cols(), lastCameraFrame.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(lastCameraFrame, bmp);
+                    }
+                    catch (CvException e){
+                        Log.d("Exception",e.getMessage());
+                    }
+
+                    bmp.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+
+                    osw.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(),
+                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+                }
+
+
+
+
+                try {
+                    FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"));
+                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+                    osw.write(getData());
+                    osw.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(),
+                            "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        Button saveAnswer = findViewById(R.id.answer);
+        saveAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ANSWER = RESULT.clone();
+            }
+        });
+
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.tutorial1_activity_java_surface_view);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
-        ANSWER[0][1] = true;
-        ANSWER[1][3] = true;
-        ANSWER[2][0] = true;
-        ANSWER[3][0] = true;
-        ANSWER[4][1] = true;
-        ANSWER[5][2] = true;
-        ANSWER[6][3] = true;
+        ANSWER[0][2] = true;
+        ANSWER[1][0] = true;
+        ANSWER[2][3] = true;
+        ANSWER[3][3] = true;
+        ANSWER[4][2] = true;
+        ANSWER[5][1] = true;
+        ANSWER[6][0] = true;
 
         mOpenCvCameraView.setCvCameraViewListener(this);
+    }
+
+    public String getDate(){
+        Date currentTime = Calendar.getInstance().getTime();
+        return currentTime.getYear() + "-" + currentTime.getMonth() + "-" + currentTime.getDate() + "-" + currentTime.getHours() + "-" + currentTime.getMinutes() + "-" + currentTime.getSeconds();
+
+    }
+
+    public String getData(){
+        StringBuilder res = new StringBuilder();
+        res.append(QUANTITY_X + " " + QUANTITY_Y);
+        res.append("\n");
+
+        res.append(MAX_MID2_FOR_FALSE+" "+MAX_MID3_FOR_FALSE);
+        res.append("\n");
+
+        res.append(MIN_MID2_FOR_TRUE + " " +MAX_MID3_FOR_TRUE);
+        res.append("\n");
+
+        for(int i = 0; i < RESULT.length; i++){
+            for(int j = 0; j < RESULT[i].length; j++){
+                res.append(!RESULT[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        for(int i = 0; i < ANSWER.length; i++){
+            for(int j = 0; j < ANSWER[i].length; j++){
+                res.append(ANSWER[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        for(int i = 0; i < mid2.length; i++){
+            for(int j = 0; j < mid2[i].length; j++){
+                res.append(mid2[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        for(int i = 0; i < mid3.length; i++){
+            for(int j = 0; j < mid3[i].length; j++){
+                res.append(mid3[i][j] + " ");
+            }
+            res.append("\n");
+        }
+        res.append("\n");
+
+        return res.toString();
     }
 
     @Override
@@ -175,6 +300,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
+        lastCameraFrame = inputFrame.rgba().clone();
 
         int h = (int) mRgba.size().height-290;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
@@ -247,25 +373,25 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //            }
 //        }
         Core.meanStdDev(mGray.submat(rect), mean, stddev/*, mask*/);
-        MID2 = mean.toArray()[0];
-        MID3 = stddev.toArray()[0];
+        mid2[i][j] = mean.toArray()[0];
+        mid3[i][j] = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
-        if(MID2 > 88 && MID3 < 35){
+        if(mid2[i][j] < MAX_MID2_FOR_FALSE && mid3[i][j] < MAX_MID3_FOR_FALSE){
             colorOfRect = new Scalar(33, 255, 0);
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(0, 0, 0));
-            RESULT[i][j] = true;
-        }else if(MID2 < 50 && MID3 < 20){
+            RESULT[i][j] = false;
+        }else if(mid2[i][j] > MIN_MID2_FOR_TRUE && mid3[i][j] < MAX_MID3_FOR_TRUE){
             colorOfRect = new Scalar(255, 12, 0);
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-            RESULT[i][j] = false;
+            RESULT[i][j] = true;
         }else{
             Imgproc.putText(mRgba, "not found", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
             RESULT[i][j] = false;
         }
         Imgproc.rectangle(mRgba, leftRight, rightLeft, colorOfRect);
-        Imgproc.putText(mRgba, String.format("%05.2f", MID2), new Point(leftRight.x, leftRight.y), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-        Imgproc.putText(mRgba, String.format("%05.2f", MID3), new Point(leftRight.x, leftRight.y + rect.height + 10), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, String.format("%05.2f", mid2[i][j]), new Point(leftRight.x, leftRight.y), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, String.format("%05.2f", mid3[i][j]), new Point(leftRight.x, leftRight.y + rect.height + 10), 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
