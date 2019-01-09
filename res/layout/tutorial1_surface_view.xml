@@ -3,21 +3,6 @@
              xmlns:opencv="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent" >
-
-    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
-        <Button
-                android:text="Send mail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/mail"/>
-        <Button
-                android:text="Create file"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/file"/>
-        <Button
-                android:text="Save answer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/answer"/>
-    </LinearLayout>
     <org.opencv.android.JavaCameraView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -25,5 +10,10 @@
             android:id="@+id/tutorial1_activity_java_surface_view"
             opencv:show_fps="false"
             opencv:camera_id="any" />
-
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
+        <Button
+                android:text="Create file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/file"/>
+    </LinearLayout>
 </FrameLayout>

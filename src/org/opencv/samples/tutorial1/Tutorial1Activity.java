@@ -10,10 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Button;
 import android.widget.Toast;
 import org.opencv.android.*;
@@ -37,7 +34,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     private CameraBridgeViewBase mOpenCvCameraView;
     private boolean mIsJavaCamera = true;
-    private MenuItem mItemSwitchCamera = null;
 
     private Mat mRgba;
     private Mat mGray;
@@ -52,16 +48,18 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     private int MIN_MID2_FOR_TRUE = 88;
     private int MAX_MID2_FOR_FALSE = 88;
-
     private int MAX_MID3_FOR_TRUE = 88;
     private int MAX_MID3_FOR_FALSE = 88;
-
 
     private boolean[][] RESULT = new boolean[QUANTITY_X][QUANTITY_Y];
     private boolean[][] ANSWER = new boolean[QUANTITY_X][QUANTITY_Y];
 
     private int SUM_RESULT = 0;
     private int MARK;
+
+    private MenuItem mItemSendResult;
+    private MenuItem mItemClean;
+    private MenuItem mItemSaveAnswer;
 
     public double SIDE_OF_SQUARE = 1.0 / 18.0;
 
@@ -89,6 +87,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     /**
      * Called when the activity is first created.
      */
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
@@ -99,50 +98,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         mid2 = new Double[QUANTITY_X][QUANTITY_Y];
         mid3 = new Double[QUANTITY_X][QUANTITY_Y];
-
-        Button mail = findViewById(R.id.mail);
-        mail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable(){
-                    @Override
-                    public void run() {
-                        final String username = getString(R.string.email);
-                        final String password = getString(R.string.password);
-
-                        Properties props = new Properties();
-                        props.put("mail.smtp.auth", "true");
-                        props.put("mail.smtp.starttls.enable", "true");
-                        props.put("mail.smtp.host", "smtp.gmail.com");
-                        props.put("mail.smtp.port", "587");
-
-                        Session session = Session.getInstance(props,
-                                new Authenticator() {
-                                    protected PasswordAuthentication getPasswordAuthentication() {
-                                        return new PasswordAuthentication(username, password);
-                                    }
-                                });
-
-                        try {
-
-                            Message message = new MimeMessage(session);
-                            message.setFrom(new InternetAddress("practice.PTHS@gmail.com"));
-                            message.setRecipients(javax.mail.Message.RecipientType.TO,
-                                    InternetAddress.parse("polzikd@mail.ru"));
-                            message.setSubject("Testing Subject");
-                            message.setText("Dear Mail Crawler,"
-                                    + "\n\nyour mark is" + Integer.toString(MARK));
-
-                            Transport.send(message);
-
-                            Log.i("Done", "Email was sended");
-
-                        } catch (MessagingException e) {
-                            throw new RuntimeException(e);
-                        }            }
-                }).start();
-            }
-        });
 
         Button fileButton = findViewById(R.id.file);
         fileButton.setOnClickListener(new View.OnClickListener() {
@@ -190,18 +145,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 } catch (Throwable t) {
                     Toast.makeText(getApplicationContext(),
                             "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        Button saveAnswer = findViewById(R.id.answer);
-        saveAnswer.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-            @Override
-            public void onClick(View v) {
-//                ANSWER = RESULT.clone();
-                for (int i = 0; i < RESULT.length; i++) {
-                    ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT.length);//copyOf(RESULT[i], RESULT[i].length);
                 }
             }
         });
@@ -418,5 +361,67 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             res += "0";
         }
         return res.substring(0, leangth);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "called onCreateOptionsMenu");
+        mItemSendResult = menu.add("Send Result");
+        mItemClean = menu.add("Clean");
+        mItemSaveAnswer = menu.add("Save Answer");
+
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
+
+        if (item == mItemSendResult) {
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    final String username = getString(R.string.email);
+                    final String password = getString(R.string.password);
+
+                    Properties props = new Properties();
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.starttls.enable", "true");
+                    props.put("mail.smtp.host", "smtp.gmail.com");
+                    props.put("mail.smtp.port", "587");
+
+                    Session session = Session.getInstance(props,
+                            new Authenticator() {
+                                protected PasswordAuthentication getPasswordAuthentication() {
+                                    return new PasswordAuthentication(username, password);
+                                }
+                            });
+
+                    try {
+
+                        Message message = new MimeMessage(session);
+                        message.setFrom(new InternetAddress("practice.PTHS@gmail.com"));
+                        message.setRecipients(javax.mail.Message.RecipientType.TO,
+                                InternetAddress.parse("polzikd@mail.ru"));
+                        message.setSubject("Testing Subject");
+                        message.setText("Dear Mail Crawler,"
+                                + "\n\nyour mark is" + Integer.toString(MARK));
+
+                        Transport.send(message);
+
+                        Log.i("Done", "Email was sended");
+
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }            }
+            }).start();
+        } else if (item == mItemClean) {
+
+        } else if (item == mItemSaveAnswer) {
+            for (int i = 0; i < RESULT.length; i++) {
+                ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT.length);//copyOf(RESULT[i], RESULT[i].length);
+            }
+        }
+
+        return true;
     }
 }
