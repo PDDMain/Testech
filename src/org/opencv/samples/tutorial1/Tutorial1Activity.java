@@ -12,21 +12,21 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.opencv.android.*;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
+import org.w3c.dom.Text;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 
 
 public class Tutorial1Activity extends Activity implements CvCameraViewListener2 {
@@ -43,16 +43,18 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private Double[][] mid2;
     private Double[][] mid3;
 
-    private int QUANTITY_X = 7;
-    private int QUANTITY_Y = 4;
+//    private int QUANTITY_X = 7;
+//    private int QUANTITY_Y = 4;
 
     private int MIN_MID2_FOR_TRUE = 88;
     private int MAX_MID2_FOR_FALSE = 88;
     private int MAX_MID3_FOR_TRUE = 88;
     private int MAX_MID3_FOR_FALSE = 88;
 
-    private boolean[][] RESULT = new boolean[QUANTITY_X][QUANTITY_Y];
-    private boolean[][] ANSWER = new boolean[QUANTITY_X][QUANTITY_Y];
+    private Student lastStudent = new Student(new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS]);
+
+    private boolean[][] RESULT = lastStudent.studentAnswer;
+    private boolean[][] ANSWER = lastStudent.trueAnswer;
 
     private int SUM_RESULT = 0;
     private int MARK;
@@ -60,6 +62,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private MenuItem mItemSendResult;
     private MenuItem mItemClean;
     private MenuItem mItemSaveAnswer;
+    private MenuItem mItemCheckStudent;
 
     public double SIDE_OF_SQUARE = 1.0 / 18.0;
 
@@ -87,7 +90,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     /**
      * Called when the activity is first created.
      */
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
@@ -96,8 +99,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         setContentView(R.layout.tutorial1_surface_view);
 
-        mid2 = new Double[QUANTITY_X][QUANTITY_Y];
-        mid3 = new Double[QUANTITY_X][QUANTITY_Y];
+        mid2 = new Double[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
+        mid3 = new Double[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
 
         Button fileButton = findViewById(R.id.file);
         fileButton.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +175,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     public String getData(){
         StringBuilder res = new StringBuilder();
-        res.append(QUANTITY_X + " " + QUANTITY_Y);
+        res.append(Student.QUANTITY_QUESTIONS+ " " + Student.QUANTITY_OPTIONS);
         res.append("\n");
 
         res.append(MAX_MID2_FOR_FALSE+" "+MAX_MID3_FOR_FALSE);
@@ -256,32 +259,36 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         int w = (int) mRgba.size().width;    //display.getWidth();
 //        Display display = getWindowManager().getDefaultDisplay();
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
-        for (int i = 0; i < QUANTITY_X; i++) {
-            for (int j = 0; j < QUANTITY_Y; j++) {
-                if (QUANTITY_X > 1 && QUANTITY_Y > 1) {
-                    int l_x = (int) (1.0 * w / (QUANTITY_X));
-                    int l_y = (int) (1.0 * h / (QUANTITY_Y));
+        for (int i = 0; i < Student.QUANTITY_QUESTIONS; i++) {
+            for (int j = 0; j < Student.QUANTITY_OPTIONS; j++) {
+                if (Student.QUANTITY_QUESTIONS > 1 && Student.QUANTITY_OPTIONS > 1) {
+                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
+                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
                     mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, l_y/2 + j * l_y), i, j);
-                } else if (QUANTITY_X > 1) {
-                    int l_x = (int) (1.0 * w / (QUANTITY_X));
+                } else if (Student.QUANTITY_QUESTIONS > 1) {
+                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
                     mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, h / 2), i, j);
-                } else if (QUANTITY_Y > 1) {
-                    int l_y = (int) (1.0 * h / (QUANTITY_Y));
+                } else if (Student.QUANTITY_OPTIONS > 1) {
+                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
                     mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y/2 + j * l_y), i, j);
-                } else if (QUANTITY_Y == 1 && QUANTITY_X == 1) {
+                } else if (Student.QUANTITY_OPTIONS == 1 && Student.QUANTITY_QUESTIONS == 1) {
                     mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2), i, j);
                 }
             }
+            TextView text = findViewById(R.id.text);
+
+//            text.setText(Integer.toString(Student.students.size()));
+//            text.setText(Integer.toString(Student.students.size()));
         }
 
         SUM_RESULT = 0;
-        for(int i = 0; i < QUANTITY_X; i++){
+        for(int i = 0; i < Student.QUANTITY_QUESTIONS; i++){
             if(isTrue(i)){
                 SUM_RESULT++;
             }
         }
 
-        MARK = ((SUM_RESULT/QUANTITY_X)*4 + 1);
+        MARK = ((SUM_RESULT/Student.QUANTITY_QUESTIONS)*4 + 1);
 
         Imgproc.putText(mRgba, Integer.toString(MARK)+" / " + SUM_RESULT,new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
@@ -347,7 +354,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     private boolean isTrue(int numberOfQuestion){
-        for(int i = 0; i < QUANTITY_Y;i++){
+        for(int i = 0; i < Student.QUANTITY_OPTIONS;i++){
             if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
                 return false;
             }
@@ -369,10 +376,12 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mItemSendResult = menu.add("Send Result");
         mItemClean = menu.add("Clean");
         mItemSaveAnswer = menu.add("Save Answer");
+        mItemCheckStudent = menu.add("Next Student");
 
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
 
@@ -403,8 +412,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                         message.setRecipients(javax.mail.Message.RecipientType.TO,
                                 InternetAddress.parse("polzikd@mail.ru"));
                         message.setSubject("Testing Subject");
-                        message.setText("Dear Mail Crawler,"
-                                + "\n\nyour mark is" + Integer.toString(MARK));
+                        message.setText(message());
 
                         Transport.send(message);
 
@@ -415,13 +423,29 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                     }            }
             }).start();
         } else if (item == mItemClean) {
-
+            Student.students = new ArrayList<Student>();
         } else if (item == mItemSaveAnswer) {
             for (int i = 0; i < RESULT.length; i++) {
                 ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT.length);//copyOf(RESULT[i], RESULT[i].length);
             }
+        }else if (item == mItemCheckStudent) {
+            lastStudent.newID();
+            if(lastStudent.isInhere()){
+                Toast.makeText(getApplicationContext(), "Вы уже проверяли этого ученика", Toast.LENGTH_SHORT);
+            }else {
+                Student.students.add(lastStudent.clone());
+            }
+
         }
 
         return true;
+    }
+
+    public static String message(){
+        String message = "";
+        for(Student s:Student.students){
+            message += s.message();
+        }
+        return message;
     }
 }
