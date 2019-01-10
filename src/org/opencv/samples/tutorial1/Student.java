@@ -7,8 +7,6 @@ public class Student {
     public static int QUANTITY_QUESTIONS = 7;
     public static int QUANTITY_OPTIONS = 4;
 
-    public static ArrayList<Student> students = new ArrayList<Student>();;
-
     boolean[][] studentAnswer;
     boolean[][] trueAnswer;
 
@@ -50,14 +48,5 @@ public class Student {
 
     public String message(){
         return Integer.toString((int) calculateMark()*100);
-    }
-
-    public boolean isInhere(){
-        for(Student s : Student.students){
-            if(id == s.id){
-                return true;
-            }
-        }
-        return false;
     }
 }
