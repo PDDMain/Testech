@@ -101,6 +101,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
         Button fileButton = findViewById(R.id.file);
         fileButton.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
 
@@ -133,15 +134,12 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                             "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
                 }
 
-
-
-
                 try {
-                    FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"));
-                    OutputStreamWriter osw = new OutputStreamWriter(outputStream);
-                    osw.write(getData());
-                    osw.close();
+                    try(FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"))) {
+                        OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+                        osw.write(getData());
+                    }
                 } catch (Throwable t) {
                     Toast.makeText(getApplicationContext(),
                             "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
