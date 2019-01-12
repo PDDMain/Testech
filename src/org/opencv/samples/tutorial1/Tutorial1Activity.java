@@ -49,8 +49,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     public static ArrayList<Student> students = new ArrayList<Student>();
 
-    private boolean[][] RESULT = new boolean[Student.QUANTITY_QUESTIONS + 1][Student.QUANTITY_OPTIONS];
-    private boolean[][] ANSWER = new boolean[Student.QUANTITY_QUESTIONS + 1][Student.QUANTITY_OPTIONS];
+    private boolean[][] RESULT = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
+    private boolean[][] ANSWER = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
 
     private int SUM_RESULT = 0;
     private int MARK;
@@ -169,7 +169,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     public String getData(){
         StringBuilder res = new StringBuilder();
-        res.append(Student.QUANTITY_QUESTIONS+ " " + Student.QUANTITY_OPTIONS);
+        res.append((Student.QUANTITY_QUESTIONS-1)+ " " + Student.QUANTITY_OPTIONS);
         res.append("\n");
 
         res.append(Recognition.MAX_MID2_FOR_FALSE+" "+Recognition.MAX_MID3_FOR_FALSE);
@@ -178,7 +178,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         res.append(Recognition.MIN_MID2_FOR_TRUE + " " +Recognition.MAX_MID3_FOR_TRUE);
         res.append("\n");
 
-        for(int i = 0; i < RESULT.length; i++){
+        for(int i = 1; i < RESULT.length; i++){
             for(int j = 0; j < RESULT[i].length; j++){
                 res.append(!RESULT[i][j] + " ");
             }
@@ -186,7 +186,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         res.append("\n");
 
-        for(int i = 0; i < ANSWER.length; i++){
+        for(int i = 1; i < ANSWER.length; i++){
             for(int j = 0; j < ANSWER[i].length; j++){
                 res.append(ANSWER[i][j] + " ");
             }
@@ -194,7 +194,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         res.append("\n");
 
-        for(int i = 0; i < mid2.length; i++){
+        for(int i = 1; i < mid2.length; i++){
             for(int j = 0; j < mid2[i].length; j++){
                 res.append(mid2[i][j] + " ");
             }
@@ -202,7 +202,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         res.append("\n");
 
-        for(int i = 0; i < mid3.length; i++){
+        for(int i = 1; i < mid3.length; i++){
             for(int j = 0; j < mid3[i].length; j++){
                 res.append(mid3[i][j] + " ");
             }
@@ -279,7 +279,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         }
 
-        Imgproc.putText(mRgba, Integer.toString(SUM_RESULT)+" / " + Student.QUANTITY_QUESTIONS,new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, Integer.toString(SUM_RESULT)+" / " + (Student.QUANTITY_QUESTIONS - 1),new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
@@ -334,7 +334,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     private boolean isTrue(int numberOfQuestion){
-        for(int i = 1; i < Student.QUANTITY_OPTIONS;i++){
+        for(int i = 0; i < Student.QUANTITY_OPTIONS;i++){
             if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
                 return false;
             }
@@ -440,4 +440,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         return false;
     }
+
+
 }
