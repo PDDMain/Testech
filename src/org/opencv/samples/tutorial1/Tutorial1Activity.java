@@ -254,7 +254,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         int w = (int) mRgba.size().width;    //display.getWidth();
 //        Display display = getWindowManager().getDefaultDisplay();
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
-        Recognition.algo1(RESULT, mGray, mid2, mid3);
         for (int i = 0; i < Student.QUANTITY_QUESTIONS; i++) {
             for (int j = 0; j < Student.QUANTITY_OPTIONS; j++) {
                 if (Student.QUANTITY_QUESTIONS > 1 && Student.QUANTITY_OPTIONS > 1) {
@@ -312,8 +311,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //        }
 //
 //        MID1 = (1.0 * sum) / (rect.height * rect.height);
-        MatOfDouble mean = new MatOfDouble(0, 0, 0, 0);
-        MatOfDouble stddev = new MatOfDouble(0, 0, 0, 0);
+        Recognition.algo1(RESULT, mGray, mid2, mid3, i, j, rect);
 //        MatOfByte mask = new MatOfByte(w, h);
 //        for(int i = (int) leftRight.x; i < leftRight.x + w*SIDE_OF_SQUARE; i++){
 //            for(int j = (int) leftRight.y; j < leftRight.y + w*SIDE_OF_SQUARE; j++){
@@ -322,9 +320,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //                mask.get(i, j, arr);
 //            }
 //        }
-        Core.meanStdDev(mGray.submat(rect), mean, stddev/*, mask*/);
-        mid2[i][j] = mean.toArray()[0];
-        mid3[i][j] = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
         if(RESULT[i][j]){
@@ -374,42 +369,43 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
 
         if (item == mItemSendResult) {
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    final String username = getString(R.string.email);
-                    final String password = getString(R.string.password);
+//            new Thread(new Runnable(){
+//                @Override
+//                public void run() {
+            final String username = getString(R.string.email);
+            final String password = getString(R.string.password);
 
-                    Properties props = new Properties();
-                    props.put("mail.smtp.auth", "true");
-                    props.put("mail.smtp.starttls.enable", "true");
-                    props.put("mail.smtp.host", "smtp.gmail.com");
-                    props.put("mail.smtp.port", "587");
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
 
-                    Session session = Session.getInstance(props,
-                            new Authenticator() {
-                                protected PasswordAuthentication getPasswordAuthentication() {
-                                    return new PasswordAuthentication(username, password);
-                                }
-                            });
+            Session session = Session.getInstance(props,
+                    new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
 
-                    try {
+            try {
 
-                        Message message = new MimeMessage(session);
-                        message.setFrom(new InternetAddress("practice.PTHS@gmail.com"));
-                        message.setRecipients(javax.mail.Message.RecipientType.TO,
-                                InternetAddress.parse("polzikd@mail.ru"));
-                        message.setSubject("Testing Subject");
-                        message.setText(message());
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress("practice.pths@gmail.com"));
+                message.setRecipients(javax.mail.Message.RecipientType.TO,
+                        InternetAddress.parse("polzikd@mail.ru"));
+                message.setSubject("Data");
+                message.setText(message());
 
-                        Transport.send(message);
+                Transport.send(message);
 
-                        Log.i("Done", "Email was sended");
+                Log.i("Done", "Email was sended");
 
-                    } catch (MessagingException e) {
-                        throw new RuntimeException(e);
-                    }            }
-            }).start();
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+//        }
+//            }).start();
         } else if (item == mItemClean) {
             students = new ArrayList<Student>();
             TextView text = findViewById(R.id.text);
@@ -432,9 +428,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     public static String message(){
-        String message = "";
+        String message = "Student's mark:\n";
         for(Student s : students){
-            message += s.message();
+            message += "Student number " + s.id + ": " + s.message() + "\n";
         }
         return message;
     }
@@ -447,4 +443,6 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         return false;
     }
+
+
 }

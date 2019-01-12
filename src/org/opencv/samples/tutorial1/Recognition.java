@@ -1,10 +1,7 @@
 package org.opencv.samples.tutorial1;
 
 import android.graphics.Color;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfDouble;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 public class Recognition {
@@ -14,11 +11,10 @@ public class Recognition {
     public static double MAX_MID3_FOR_TRUE = 88.0;
     public static double MAX_MID3_FOR_FALSE = 88.0;
 
-    public static boolean[][] algo1(boolean[][] res, Mat mGray, double[][] mid2, double[][] mid3){
-        for(int i = 0; i < res.length; i++) {
-            for (int j = 0; j < res[i].length; j++) {
+    public static boolean[][] algo1(boolean[][] res, Mat mGray, double[][] mid2, double[][] mid3, int i, int j, Rect rect){
                 MatOfDouble mean = new MatOfDouble(0, 0, 0, 0);
                 MatOfDouble stddev = new MatOfDouble(0, 0, 0, 0);
+                Core.meanStdDev(mGray.submat(rect), mean, stddev/*, mask*/);
                 mid2[i][j] = mean.toArray()[0];
                 mid3[i][j] = stddev.toArray()[0];
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
@@ -30,8 +26,6 @@ public class Recognition {
                 } else {
                     res[i][j] = false;
                 }
-            }
-        }
         return res;
     }
 }
