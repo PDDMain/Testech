@@ -46,12 +46,11 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //    private int QUANTITY_X = 7;
 //    private int QUANTITY_Y = 4;
 
-    private Student lastStudent = new Student(new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS]);
 
     public static ArrayList<Student> students = new ArrayList<Student>();
 
-    private boolean[][] RESULT = lastStudent.studentAnswer;
-    private boolean[][] ANSWER = lastStudent.trueAnswer;
+    private boolean[][] RESULT = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
+    private boolean[][] ANSWER = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
 
     private int SUM_RESULT = 0;
     private int MARK;
@@ -280,9 +279,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             }
         }
 
-        MARK = ((SUM_RESULT/Student.QUANTITY_QUESTIONS)*4 + 1);
-
-        Imgproc.putText(mRgba, Integer.toString(MARK)+" / " + SUM_RESULT,new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, Integer.toString(SUM_RESULT)+" / " + Student.QUANTITY_QUESTIONS,new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
@@ -415,11 +412,11 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT[i].length);
             }
         }else if (item == mItemCheckStudent) {
-            lastStudent.newID();
-            if(isInhere(lastStudent)){
+            Student student = new Student(RESULT, ANSWER);
+            if(isInhere(student)){
                 Toast.makeText(getApplicationContext(), "Вы уже проверяли этого ученика", Toast.LENGTH_LONG);
             }else {
-                students.add(lastStudent.clone());
+                students.add(student);
                 TextView text = findViewById(R.id.text);
                 text.setText(Integer.toString(students.size()));
             }

@@ -10,14 +10,10 @@ public class Student {
     boolean[][] studentAnswer;
     boolean[][] trueAnswer;
 
-    public Student(boolean[][] key){
-        studentAnswer = new boolean[QUANTITY_QUESTIONS][QUANTITY_OPTIONS];
-        trueAnswer = key;
-    }
-
-    public Student clone(){
-        Student clone = new Student(trueAnswer);
-        return clone;
+    public Student(boolean[][] result, boolean[][] key){
+        studentAnswer = clone(result);
+        trueAnswer = clone(key);
+        newID();
     }
 
     public double calculateMark(){
@@ -33,7 +29,7 @@ public class Student {
                 t++;
             }
         }
-        return 1.0*t/QUANTITY_QUESTIONS;
+        return t;//QUANTITY_QUESTIONS;
     }
 
     public void newID(){
@@ -47,6 +43,16 @@ public class Student {
     }
 
     public String message(){
-        return Integer.toString((int) calculateMark()*100);
+        return Integer.toString((int) calculateMark()) + " of " + Integer.toString(QUANTITY_QUESTIONS);
+    }
+
+    public boolean[][] clone(boolean[][] input){
+        boolean[][] output = new boolean[input.length][input[0].length];
+        for(int i = 0; i < input.length; i++){
+            for(int j = 0; j < input[i].length; j++){
+                output[i][j] = input[i][j];
+            }
+        }
+        return output;
     }
 }
