@@ -49,8 +49,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 
     public static ArrayList<Student> students = new ArrayList<Student>();
 
-    private boolean[][] RESULT = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
-    private boolean[][] ANSWER = new boolean[Student.QUANTITY_QUESTIONS][Student.QUANTITY_OPTIONS];
+    private boolean[][] RESULT = new boolean[Student.QUANTITY_QUESTIONS + 1][Student.QUANTITY_OPTIONS];
+    private boolean[][] ANSWER = new boolean[Student.QUANTITY_QUESTIONS + 1][Student.QUANTITY_OPTIONS];
 
     private int SUM_RESULT = 0;
     private int MARK;
@@ -273,7 +273,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
 
         SUM_RESULT = 0;
-        for(int i = 0; i < Student.QUANTITY_QUESTIONS; i++){
+        for(int i = 1; i < Student.QUANTITY_QUESTIONS; i++){
             if(isTrue(i)){
                 SUM_RESULT++;
             }
@@ -334,7 +334,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     private boolean isTrue(int numberOfQuestion){
-        for(int i = 0; i < Student.QUANTITY_OPTIONS;i++){
+        for(int i = 1; i < Student.QUANTITY_OPTIONS;i++){
             if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
                 return false;
             }
@@ -427,7 +427,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public static String message(){
         String message = "Student's mark:\n";
         for(Student s : students){
-            message += "Student number " + s.id + ": " + s.message() + "\n";
+            message += "Student number " + s.id + ": " + s.getMessage() + "\n";
         }
         return message;
     }
@@ -440,6 +440,4 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         return false;
     }
-
-
 }
