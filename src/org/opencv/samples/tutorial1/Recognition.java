@@ -8,8 +8,8 @@ public class Recognition {
 
     public static double MIN_MID2_FOR_TRUE = 88.0;
     public static double MAX_MID2_FOR_FALSE = 88.0;
-    public static double MAX_MID3_FOR_TRUE = 88.0;
-    public static double MAX_MID3_FOR_FALSE = 88.0;
+    public static double MAX_MID3_FOR_TRUE = 38.0;
+    public static double MAX_MID3_FOR_FALSE = 38.0;
 
     public static boolean[][] algo1(boolean[][] res, Mat mGray, double[][] mid2, double[][] mid3, int i, int j, Rect rect){
                 MatOfDouble mean = new MatOfDouble(0, 0, 0, 0);

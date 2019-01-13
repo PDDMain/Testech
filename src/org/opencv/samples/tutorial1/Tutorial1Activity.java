@@ -59,6 +59,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private MenuItem mItemClean;
     private MenuItem mItemSaveAnswer;
     private MenuItem mItemCheckStudent;
+    private MenuItem mItemCalibration;
 
     public double SIDE_OF_SQUARE = 1.0 / 18.0;
 
@@ -386,6 +387,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mItemClean = menu.add("Очистка");
         mItemSaveAnswer = menu.add("Сохранение ответов");
         mItemCheckStudent = menu.add("Следующая анкета");
+        mItemCalibration = menu.add("Калибровка");
 
         return true;
     }
@@ -436,6 +438,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             students = new ArrayList<Student>();
             TextView text = findViewById(R.id.text);
             text.setText(Integer.toString(students.size()));
+            Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = 88;
         } else if (item == mItemSaveAnswer) {
             for (int i = 0; i < RESULT.length; i++) {
                 ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT[i].length);
@@ -449,6 +452,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 TextView text = findViewById(R.id.text);
                 text.setText(Integer.toString(students.size()));
             }
+        } else if (item == mItemCalibration){
+            calibration();
         }
         updateStudentText();
         return true;
@@ -471,5 +476,20 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         return false;
     }
 
-
+    public void calibration() {
+        double w = 0;
+        double b = 0;
+        for (int i = 0; i < mid2.length; i++) {
+            for (int j = 0; j < mid2[i].length; i++) {
+                if ((i + j) % 2 == 0) {
+                    w += mid2[i][j];
+                } else {
+                    b += mid2[i][j];
+                }
+            }
+        }
+        w = w / (mid2.length * mid2[0].length / 2);
+        b = b / (mid2.length * mid2[0].length / 2);
+        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = (w + b) / 2;
+    }
 }
