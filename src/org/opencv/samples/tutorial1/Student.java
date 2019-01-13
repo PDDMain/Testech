@@ -3,7 +3,7 @@ package org.opencv.samples.tutorial1;
 import java.util.ArrayList;
 
 public class Student {
-    int id;
+    private int id;
 
     public static int QUANTITY_QUESTIONS = 7;
     public static int QUANTITY_OPTIONS = 4;
@@ -15,6 +15,10 @@ public class Student {
         studentAnswer = clone(result);
         trueAnswer = clone(key);
         getID();
+    }
+
+    public int getId() {
+        return id;
     }
 
     private double calculateMark() {
