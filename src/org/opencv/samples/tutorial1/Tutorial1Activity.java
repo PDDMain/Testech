@@ -165,8 +165,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public String createStudentText() {
         boolean[] f = new boolean[(int) Math.pow(2, Student.QUANTITY_OPTIONS)];
         for (Student s : students) {
-            if (s.id < f.length) {
-                f[s.id] = true;
+            if (s.getId() < f.length) {
+                f[s.getId()] = true;
             }
         }
         String s = "";
@@ -280,19 +280,23 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
         for (int i = 0; i < Student.QUANTITY_QUESTIONS; i++) {
             for (int j = 0; j < Student.QUANTITY_OPTIONS; j++) {
-                if (Student.QUANTITY_QUESTIONS > 1 && Student.QUANTITY_OPTIONS > 1) {
-                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
-                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, l_y / 2 + j * l_y), i, j);
-                } else if (Student.QUANTITY_QUESTIONS > 1) {
-                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, h / 2), i, j);
-                } else if (Student.QUANTITY_OPTIONS > 1) {
-                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y / 2 + j * l_y), i, j);
-                } else if (Student.QUANTITY_OPTIONS == 1 && Student.QUANTITY_QUESTIONS == 1) {
-                    mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2), i, j);
-                }
+                int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
+                int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
+                mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, l_y / 2 + j * l_y), i, j);
+
+//                if (Student.QUANTITY_QUESTIONS > 1 && Student.QUANTITY_OPTIONS > 1) {
+//                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
+//                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
+//                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, l_y / 2 + j * l_y), i, j);
+//                } else if (Student.QUANTITY_QUESTIONS > 1) {
+//                    int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
+//                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, h / 2), i, j);
+//                } else if (Student.QUANTITY_OPTIONS > 1) {
+//                    int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
+//                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y / 2 + j * l_y), i, j);
+//                } else if (Student.QUANTITY_OPTIONS == 1 && Student.QUANTITY_QUESTIONS == 1) {
+//                    mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2), i, j);
+//                }
             }
 //            text.setText(Integer.toString(Student.students.size()));
         }
@@ -453,14 +457,14 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     public static String message() {
         String message = "Student's mark:\n";
         for (Student s : students) {
-            message += "Student number " + s.id + ": " + s.getMessage() + "\n";
+            message += "Student number " + s.getId() + ": " + s.getMessage() + "\n";
         }
         return message;
     }
 
     public boolean isInhere(Student student) {
         for (Student s : students) {
-            if (student.id == s.id) {
+            if (student.getId() == s.getId()) {
                 return true;
             }
         }
