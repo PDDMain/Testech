@@ -44,7 +44,20 @@ public class Student {
     }
 
     public String getMessage() {
-        return Integer.toString((int) calculateMark()) + " of " + Integer.toString(QUANTITY_QUESTIONS - 1);
+        return Integer.toString((int) calculateMark()) + " of " + Integer.toString(QUANTITY_QUESTIONS - 1) + "\n    Fails: " + generateFail();
+    }
+
+    public String generateFail(){
+        String out = "";
+        for (int i = 1; i < QUANTITY_QUESTIONS; i++) {
+            boolean flag = true;
+            for (int j = 0; j < QUANTITY_OPTIONS; j++) {
+                if (studentAnswer[i][j] != trueAnswer[i][j]) {
+                    out = out + ", " + i + " question";
+                }
+            }
+        }
+        return out;
     }
 
     private boolean[][] clone(boolean[][] input) {
