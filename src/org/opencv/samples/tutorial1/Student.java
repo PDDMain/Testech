@@ -57,7 +57,7 @@ public class Student {
             boolean flag = true;
             for (int j = 0; j < QUANTITY_OPTIONS; j++) {
                 if (studentAnswer[i][j] != trueAnswer[i][j]) {
-                    out = out + ", " + i + " question";
+                    out = out + ", " + i + " вопрос";
                 }
             }
         }

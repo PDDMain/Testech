@@ -173,9 +173,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         for (int i = 0; i < f.length; i++) {
             s = s + Integer.toString(i);
             if (f[i]) {
-                s = s + " - checked\n";
+                s = s + " - проверен\n";
             } else {
-                s = s + " - not checked\n";
+                s = s + " - не проверен\n";
             }
         }
         return s;
@@ -382,10 +382,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i(TAG, "called onCreateOptionsMenu");
-        mItemSendResult = menu.add("Send Result");
-        mItemClean = menu.add("Clean");
-        mItemSaveAnswer = menu.add("Save Answer");
-        mItemCheckStudent = menu.add("Next Student");
+        mItemSendResult = menu.add("Отправить результаты");
+        mItemClean = menu.add("Очистка");
+        mItemSaveAnswer = menu.add("Сохранение ответов");
+        mItemCheckStudent = menu.add("Следующая анкета");
 
         return true;
     }
@@ -455,9 +455,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     public static String message() {
-        String message = "Student's mark:\n";
+        String message = "Оценка ученика:\n";
         for (Student s : students) {
-            message += "Student number " + s.getId() + ": " + s.getMessage() + "\n";
+            message += "Индекс ученика " + s.getId() + ": " + s.getMessage() + "\n";
         }
         return message;
     }
