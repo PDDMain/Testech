@@ -120,9 +120,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                     try {
                         bmp = Bitmap.createBitmap(lastCameraFrame.cols(), lastCameraFrame.rows(), Bitmap.Config.ARGB_8888);
                         Utils.matToBitmap(lastCameraFrame, bmp);
-                    }
-                    catch (CvException e){
-                        Log.d("Exception",e.getMessage());
+                    } catch (CvException e) {
+                        Log.d("Exception", e.getMessage());
                     }
 
                     bmp.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
@@ -134,7 +133,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 }
 
                 try {
-                    try(FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
+                    try (FileOutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"))) {
                         OutputStreamWriter osw = new OutputStreamWriter(outputStream);
                         osw.write(getData());
@@ -145,6 +144,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 }
             }
         });
+
+        updateStudentText();
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.tutorial1_activity_java_surface_view);
 
@@ -161,49 +162,73 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
-    public String getDate(){
+    public String createStudentText() {
+        boolean[] f = new boolean[(int) Math.pow(2, Student.QUANTITY_OPTIONS)];
+        for (Student s : students) {
+            if (s.id < f.length) {
+                f[s.id] = true;
+            }
+        }
+        String s = "";
+        for (int i = 0; i < f.length; i++) {
+            s = s + Integer.toString(i);
+            if (f[i]) {
+                s = s + " - checked\n";
+            } else {
+                s = s + " - not checked\n";
+            }
+        }
+        return s;
+    }
+
+    public void updateStudentText() {
+        TextView studentsText = findViewById(R.id.students);
+        studentsText.setText(createStudentText());
+    }
+
+    public String getDate() {
         Date currentTime = Calendar.getInstance().getTime();
         return currentTime.getYear() + "-" + currentTime.getMonth() + "-" + currentTime.getDate() + "-" + currentTime.getHours() + "-" + currentTime.getMinutes() + "-" + currentTime.getSeconds();
 
     }
 
-    public String getData(){
+    public String getData() {
         StringBuilder res = new StringBuilder();
-        res.append((Student.QUANTITY_QUESTIONS-1)+ " " + Student.QUANTITY_OPTIONS);
+        res.append((Student.QUANTITY_QUESTIONS - 1) + " " + Student.QUANTITY_OPTIONS);
         res.append("\n");
 
-        res.append(Recognition.MAX_MID2_FOR_FALSE+" "+Recognition.MAX_MID3_FOR_FALSE);
+        res.append(Recognition.MAX_MID2_FOR_FALSE + " " + Recognition.MAX_MID3_FOR_FALSE);
         res.append("\n");
 
-        res.append(Recognition.MIN_MID2_FOR_TRUE + " " +Recognition.MAX_MID3_FOR_TRUE);
+        res.append(Recognition.MIN_MID2_FOR_TRUE + " " + Recognition.MAX_MID3_FOR_TRUE);
         res.append("\n");
 
-        for(int i = 1; i < RESULT.length; i++){
-            for(int j = 0; j < RESULT[i].length; j++){
+        for (int i = 1; i < RESULT.length; i++) {
+            for (int j = 0; j < RESULT[i].length; j++) {
                 res.append(!RESULT[i][j] + " ");
             }
             res.append("\n");
         }
         res.append("\n");
 
-        for(int i = 1; i < ANSWER.length; i++){
-            for(int j = 0; j < ANSWER[i].length; j++){
+        for (int i = 1; i < ANSWER.length; i++) {
+            for (int j = 0; j < ANSWER[i].length; j++) {
                 res.append(ANSWER[i][j] + " ");
             }
             res.append("\n");
         }
         res.append("\n");
 
-        for(int i = 1; i < mid2.length; i++){
-            for(int j = 0; j < mid2[i].length; j++){
+        for (int i = 1; i < mid2.length; i++) {
+            for (int j = 0; j < mid2[i].length; j++) {
                 res.append(mid2[i][j] + " ");
             }
             res.append("\n");
         }
         res.append("\n");
 
-        for(int i = 1; i < mid3.length; i++){
-            for(int j = 0; j < mid3[i].length; j++){
+        for (int i = 1; i < mid3.length; i++) {
+            for (int j = 0; j < mid3[i].length; j++) {
                 res.append(mid3[i][j] + " ");
             }
             res.append("\n");
@@ -249,7 +274,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mGray = inputFrame.gray();
         lastCameraFrame = inputFrame.rgba().clone();
 
-        int h = (int) mRgba.size().height-290;     //display.getHeight();
+        int h = (int) mRgba.size().height - 290;     //display.getHeight();
         int w = (int) mRgba.size().width;    //display.getWidth();
 //        Display display = getWindowManager().getDefaultDisplay();
 //        mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2));
@@ -258,13 +283,13 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 if (Student.QUANTITY_QUESTIONS > 1 && Student.QUANTITY_OPTIONS > 1) {
                     int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
                     int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, l_y/2 + j * l_y), i, j);
+                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, l_y / 2 + j * l_y), i, j);
                 } else if (Student.QUANTITY_QUESTIONS > 1) {
                     int l_x = (int) (1.0 * w / (Student.QUANTITY_QUESTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(l_x/2 + i * l_x, h / 2), i, j);
+                    mRgba = midRect(mRgba, mGray, new Point(l_x / 2 + i * l_x, h / 2), i, j);
                 } else if (Student.QUANTITY_OPTIONS > 1) {
                     int l_y = (int) (1.0 * h / (Student.QUANTITY_OPTIONS));
-                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y/2 + j * l_y), i, j);
+                    mRgba = midRect(mRgba, mGray, new Point(w / 2, l_y / 2 + j * l_y), i, j);
                 } else if (Student.QUANTITY_OPTIONS == 1 && Student.QUANTITY_QUESTIONS == 1) {
                     mRgba = midRect(mRgba, mGray, new Point(w / 2, h / 2), i, j);
                 }
@@ -273,13 +298,13 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
 
         SUM_RESULT = 0;
-        for(int i = 1; i < Student.QUANTITY_QUESTIONS; i++){
-            if(isTrue(i)){
+        for (int i = 1; i < Student.QUANTITY_QUESTIONS; i++) {
+            if (isTrue(i)) {
                 SUM_RESULT++;
             }
         }
 
-        Imgproc.putText(mRgba, Integer.toString(SUM_RESULT)+" / " + (Student.QUANTITY_QUESTIONS - 1),new Point(w-100, h+200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
+        Imgproc.putText(mRgba, Integer.toString(SUM_RESULT) + " / " + (Student.QUANTITY_QUESTIONS - 1), new Point(w - 100, h + 200), 3, 0.8, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
 
         return mRgba;
     }
@@ -319,10 +344,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
 //        }
 //        Imgproc.putText(mRgba, toShortString(MID1, 7), new Point(leftRight.x, leftRight.y + 15), 3, 0.7, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
         Scalar colorOfRect = new Scalar(Color.red(235), Color.green(255), Color.blue(0));
-        if(RESULT[i][j]){
+        if (RESULT[i][j]) {
             colorOfRect = new Scalar(255, 12, 0);
             Imgproc.putText(mRgba, "true", rightLeft, 3, 0.5, new Scalar(Color.red(0), Color.green(0), Color.blue(0)));
-        }else{
+        } else {
             colorOfRect = new Scalar(33, 255, 0);
             Imgproc.putText(mRgba, "false", rightLeft, 3, 0.5, new Scalar(0, 0, 0));
         }
@@ -333,9 +358,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         return mRgba;
     }
 
-    private boolean isTrue(int numberOfQuestion){
-        for(int i = 0; i < Student.QUANTITY_OPTIONS;i++){
-            if(ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]){
+    private boolean isTrue(int numberOfQuestion) {
+        for (int i = 0; i < Student.QUANTITY_OPTIONS; i++) {
+            if (ANSWER[numberOfQuestion][i] != RESULT[numberOfQuestion][i]) {
                 return false;
             }
         }
@@ -411,30 +436,31 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
             for (int i = 0; i < RESULT.length; i++) {
                 ANSWER[i] = Arrays.copyOf(RESULT[i], RESULT[i].length);
             }
-        }else if (item == mItemCheckStudent) {
+        } else if (item == mItemCheckStudent) {
             Student student = new Student(RESULT, ANSWER);
-            if(isInhere(student)){
-                Toast.makeText(getApplicationContext(), "Вы уже проверяли этого ученика", Toast.LENGTH_LONG);
-            }else {
+            if (isInhere(student)) {
+                Toast.makeText(getApplicationContext(), "Вы уже проверяли этого ученика", Toast.LENGTH_LONG).show();
+            } else {
                 students.add(student);
                 TextView text = findViewById(R.id.text);
                 text.setText(Integer.toString(students.size()));
             }
         }
+        updateStudentText();
         return true;
     }
 
-    public static String message(){
+    public static String message() {
         String message = "Student's mark:\n";
-        for(Student s : students){
+        for (Student s : students) {
             message += "Student number " + s.id + ": " + s.getMessage() + "\n";
         }
         return message;
     }
 
-    public boolean isInhere(Student student){
-        for(Student s : students){
-            if(student.id == s.id){
+    public boolean isInhere(Student student) {
+        for (Student s : students) {
+            if (student.id == s.id) {
                 return true;
             }
         }

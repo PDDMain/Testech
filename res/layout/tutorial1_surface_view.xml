@@ -18,5 +18,8 @@
                 android:text="Create file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/file"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text=""
+                  android:id="@+id/students"/>
     </LinearLayout>
 </FrameLayout>
