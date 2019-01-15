@@ -60,6 +60,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     private MenuItem mItemSaveAnswer;
     private MenuItem mItemCheckStudent;
     private MenuItem mItemCalibration;
+    private MenuItem mItemCalibration2;
 
     public double SIDE_OF_SQUARE = 1.0 / 18.0;
 
@@ -138,6 +139,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                             Environment.DIRECTORY_DOCUMENTS), "data" + date + ".txt"))) {
                         OutputStreamWriter osw = new OutputStreamWriter(outputStream);
                         osw.write(getData());
+                        osw.close();
                     }
                 } catch (Throwable t) {
                     Toast.makeText(getApplicationContext(),
@@ -388,6 +390,8 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         mItemSaveAnswer = menu.add("Сохранение ответов");
         mItemCheckStudent = menu.add("Следующая анкета");
         mItemCalibration = menu.add("Калибровка");
+        mItemCalibration2 = menu.add("Калибровка 2");
+
 
         return true;
     }
@@ -452,8 +456,10 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
                 TextView text = findViewById(R.id.text);
                 text.setText(Integer.toString(students.size()));
             }
-        } else if (item == mItemCalibration){
+        } else if (item == mItemCalibration) {
             calibration();
+        } else if (item == mItemCalibration2) {
+            calibration2();
         }
         updateStudentText();
         return true;
@@ -480,7 +486,7 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         double w = 0;
         double b = 0;
         for (int i = 0; i < mid2.length; i++) {
-            for (int j = 0; j < mid2[i].length; i++) {
+            for (int j = 0; j < mid2[i].length; j++) {
                 if ((i + j) % 2 == 0) {
                     w += mid2[i][j];
                 } else {
@@ -491,5 +497,16 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         w = w / (mid2.length * mid2[0].length / 2);
         b = b / (mid2.length * mid2[0].length / 2);
         Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = (w + b) / 2;
+    }
+
+    public void calibration2() {
+        double max = 0;
+        for (int i = 0; i < mid2.length; i++) {
+            for (int j = 0; j < mid2[i].length; j++) {
+                max = Math.max(max, mid2[i][j]);
+            }
+        }
+        max = 1.35*max;
+        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = max;
     }
 }
