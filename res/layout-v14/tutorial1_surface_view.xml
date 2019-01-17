@@ -15,7 +15,7 @@
             android:text="0"
             android:id="@+id/text"/>
         <Button
-                android:text="Create file"
+                android:text="Создать файл"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/file"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

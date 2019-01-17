@@ -48,16 +48,21 @@ public class Student {
     }
 
     public String getMessage() {
-        return Integer.toString((int) calculateMark()) + " of " + Integer.toString(QUANTITY_QUESTIONS - 1) + "\n    Fails: " + generateFail();
+        return Integer.toString((int) calculateMark()) + " of " + Integer.toString(QUANTITY_QUESTIONS - 1) + "\n        Ошибки в заданиях: " + generateFail();
     }
 
     public String generateFail(){
         String out = "";
-        for (int i = 1; i < QUANTITY_QUESTIONS; i++) {
+        for (int j = 0; j < QUANTITY_OPTIONS; j++) {
+            if (studentAnswer[0][j] != trueAnswer[0][j]) {
+                out = out + 1;
+            }
+        }
+        for (int i = 2; i < QUANTITY_QUESTIONS; i++) {
             boolean flag = true;
             for (int j = 0; j < QUANTITY_OPTIONS; j++) {
                 if (studentAnswer[i][j] != trueAnswer[i][j]) {
-                    out = out + ", " + i + " вопрос";
+                    out = out + ", " + i;
                 }
             }
         }

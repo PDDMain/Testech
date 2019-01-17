@@ -466,9 +466,9 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
     }
 
     public static String message() {
-        String message = "Оценка ученика:\n";
+        String message = "Результаты:\n";
         for (Student s : students) {
-            message += "Индекс ученика " + s.getId() + ": " + s.getMessage() + "\n";
+            message += "    Ученик номер " + s.getId() + ": " + s.getMessage() + "\n";
         }
         return message;
     }
@@ -496,17 +496,17 @@ public class Tutorial1Activity extends Activity implements CvCameraViewListener2
         }
         w = w / (mid2.length * mid2[0].length / 2);
         b = b / (mid2.length * mid2[0].length / 2);
-        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = (w + b) / 2;
+        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = (w + 2*b) / 3;
     }
 
     public void calibration2() {
-        double max = 0;
+        double min = 255;
         for (int i = 0; i < mid2.length; i++) {
             for (int j = 0; j < mid2[i].length; j++) {
-                max = Math.max(max, mid2[i][j]);
+                min = Math.min(min, mid2[i][j]);
             }
         }
-        max = 1.35*max;
-        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = max;
+        min = 0.88*min;
+        Recognition.MAX_MID2_FOR_FALSE = Recognition.MIN_MID2_FOR_TRUE = min;
     }
 }
